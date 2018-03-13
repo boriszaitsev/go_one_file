@@ -2,7 +2,7 @@ package main
 
 import (
 	"bufio"
-	"errors"
+	// "errors"
 	"os"
 	ss "strings"
 )
@@ -37,7 +37,18 @@ func ReadGoFile(fname string) (GoFile, error) {
 			continue
 		}
 
-		if ss.HasPrefix(trm, "import") {
+		if inImport {
+			imp := takeImport(trm)
+			if len(imp) > 0 {
+				imports = append(imports, imp)
+			}
+			if ss.HasSuffix(trm, ")") {
+				inImport = false
+			}
+			continue
+		}
+
+		if ss.HasPrefix(trm, "import ") {
 			if ss.Contains(trm, "(") {
 				imp := takeImport(trm)
 				if len(imp) > 0 {
@@ -50,23 +61,22 @@ func ReadGoFile(fname string) (GoFile, error) {
 			continue
 		}
 
-		if inImport {
-
-		}
-
 		code = append(code, line)
 	}
 
 	if err := scanner.Err(); err != nil {
 		return GoFile{}, err
 	}
+	print(fname)
+	print(imports)
 	return GoFile{pkg, imports, code}, nil
 }
 
 func takeImport(s string) string {
-	commaIdx := ss.Index(s, "\"")
-	if commaIdx == -1 {
+	fi := ss.Index(s, "\"")
+	li := ss.LastIndex(s, "\"") + 1
+	if fi == -1 {
 		return ""
 	}
-	return s[commaIdx:]
+	return s[fi:li]
 }
