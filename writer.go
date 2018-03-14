@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"time"
 )
 
@@ -44,7 +45,7 @@ func (w *GoWriter) AddGoFile(gf GoFile) {
 }
 
 func (w *GoWriter) Write(path, outFname string) error {
-	f, err := os.Create(path + "\\" + outFname)
+	f, err := os.Create(path + string(filepath.Separator) + outFname)
 	if err != nil {
 		return err
 	}

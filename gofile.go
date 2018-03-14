@@ -2,8 +2,8 @@ package main
 
 import (
 	"bufio"
-	// "errors"
 	"os"
+	"path/filepath"
 	ss "strings"
 )
 
@@ -16,7 +16,7 @@ func ReadGoFile(path, fname string) (GoFile, error) {
 	pkg := ""
 	imports := make([]string, 0, 10)
 	code := make([]string, 0, 200)
-	file, err := os.Open(path + "\\" + fname)
+	file, err := os.Open(path + string(filepath.Separator) + fname)
 	if err != nil {
 		return GoFile{}, err
 	}

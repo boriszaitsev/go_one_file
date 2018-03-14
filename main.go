@@ -23,6 +23,7 @@ func main() {
 	}
 
 	goList := dirFiles.ListExt("go")
+	print("goList=", goList)
 	writer := MakeWriter()
 	for _, fname := range goList {
 		if strings.Contains(fname, "_test") || strings.HasPrefix(fname, "_") {
@@ -34,6 +35,7 @@ func main() {
 			pressEnterExit(err)
 			return
 		}
+
 		writer.AddGoFile(goFile)
 	}
 

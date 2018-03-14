@@ -23,8 +23,10 @@ func MakeDirFiles(path string) (DirFiles, error) {
 			return dir, err
 		}
 	}
-	if !strings.HasSuffix(path, "\\") {
-		path += "\\"
+	print("separator=", string(filepath.Separator))
+	print("List separator=", string(filepath.ListSeparator))
+	if !strings.HasSuffix(path, string(filepath.Separator)) {
+		path += string(filepath.Separator)
 	}
 
 	dir.Path = path
@@ -125,14 +127,3 @@ func (dir *DirFiles) Move(fullFromName, newName string) (string, error) {
 	dir.fset[strings.ToLower(newName)] = struct{}{}
 	return newName, nil
 }
-
-// func main() {
-// 	dir, _ := MakeDirFiles("F:\\acontrol")
-// 	print(dir.GenerateUnicName(os.Args[1]))
-// 	newName, err := dir.Rename(os.Args[1], os.Args[1])
-// 	if err != nil {
-// 		print(err)
-// 	} else {
-// 		print(os.Args[1], " -> ", newName)
-// 	}
-// }
