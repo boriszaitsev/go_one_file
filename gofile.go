@@ -8,15 +8,15 @@ import (
 )
 
 type GoFile struct {
-	pkg           string
+	fname, pkg    string
 	imports, code []string
 }
 
-func ReadGoFile(fname string) (GoFile, error) {
+func ReadGoFile(path, fname string) (GoFile, error) {
 	pkg := ""
 	imports := make([]string, 0, 10)
 	code := make([]string, 0, 200)
-	file, err := os.Open(fname)
+	file, err := os.Open(path + "\\" + fname)
 	if err != nil {
 		return GoFile{}, err
 	}
@@ -28,16 +28,15 @@ func ReadGoFile(fname string) (GoFile, error) {
 		line := scanner.Text()
 		trm := ss.TrimSpace(line)
 
-		if ss.HasPrefix(trm, "//") {
-			continue
-		}
-
-		if ss.HasPrefix(trm, "package") {
+		if ss.HasPrefix(trm, "package ") {
 			pkg = line
 			continue
 		}
 
 		if inImport {
+			if ss.HasPrefix(trm, "//") {
+				continue
+			}
 			imp := takeImport(trm)
 			if len(imp) > 0 {
 				imports = append(imports, imp)
@@ -69,7 +68,7 @@ func ReadGoFile(fname string) (GoFile, error) {
 	}
 	print(fname)
 	print(imports)
-	return GoFile{pkg, imports, code}, nil
+	return GoFile{fname, pkg, imports, code}, nil
 }
 
 func takeImport(s string) string {

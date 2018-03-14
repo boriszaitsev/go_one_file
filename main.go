@@ -14,7 +14,7 @@ func main() {
 	}
 	print("path = ", path)
 	print("base = ", filepath.Base((path)))
-	// outFileName := "_out_" + filepath.Base(path) + ".go"
+	outFileName := "_out_" + filepath.Base(path) + ".go"
 
 	dirFiles, err := MakeDirFiles(path)
 	if err != nil {
@@ -23,45 +23,24 @@ func main() {
 	}
 
 	goList := dirFiles.ListExt("go")
-	goFiles := make([]GoFile, 0, 50)
-	// header := MakeHeader()
-	mainIdx, constIdx := -1, -1
-	for i, fname := range goList {
+	writer := MakeWriter()
+	for _, fname := range goList {
 		if strings.Contains(fname, "_test") || strings.HasPrefix(fname, "_") {
 			continue
 		}
-		if fname == "main.go" {
-			mainIdx = i
-		} else if fname == "const.go" {
-			constIdx = i
-		}
 
-		goFile, err := ReadGoFile(path + "\\" + fname)
+		goFile, err := ReadGoFile(path, fname)
 		if err != nil {
 			pressEnterExit(err)
 			return
 		}
-		// header.addPackage(goFile.pkg)
-		// header.addImports(goFile.imports)
-
-		goFiles = append(goFiles, goFile)
+		writer.AddGoFile(goFile)
 	}
 
-	if constIdx != -1 {
-		goFiles[0], goFiles[constIdx] = goFiles[constIdx], goFiles[0]
+	if err = writer.Write(path, outFileName); err != nil {
+		pressEnterExit(err)
+		return
 	}
-	if mainIdx != -1 {
-		swapIdx := 0
-		if constIdx != 1 {
-			swapIdx = 1
-		}
-		goFiles[swapIdx], goFiles[mainIdx] = goFiles[mainIdx], goFiles[swapIdx]
-	}
-
-	// if err = WriteOutFile(header, goFiles); err != nil {
-	// 	pressEnterExit(err)
-	// 	return
-	// }
 
 }
 
