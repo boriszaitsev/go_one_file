@@ -13,8 +13,8 @@ func main() {
 		pressEnterExit(err)
 	}
 	print("path = ", path)
-	print("base = ", filepath.Base((path)))
 	outFileName := "_out_" + filepath.Base(path) + ".go"
+	print("out file name = ", outFileName)
 
 	dirFiles, err := MakeDirFiles(path)
 	if err != nil {

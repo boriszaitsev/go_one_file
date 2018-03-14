@@ -23,8 +23,6 @@ func MakeDirFiles(path string) (DirFiles, error) {
 			return dir, err
 		}
 	}
-	print("separator=", string(filepath.Separator))
-	print("List separator=", string(filepath.ListSeparator))
 	if !strings.HasSuffix(path, string(filepath.Separator)) {
 		path += string(filepath.Separator)
 	}
