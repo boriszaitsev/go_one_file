@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
 )
 
 type GoWriter struct {
@@ -36,6 +37,9 @@ func (w *GoWriter) AddGoFile(gf GoFile) {
 		}
 	}
 
+	w.code = append(w.code, "")
+	w.code = append(w.code, "//  **** "+gf.fname+" ****")
+	w.code = append(w.code, "")
 	w.code = append(w.code, gf.code...)
 }
 
@@ -46,12 +50,13 @@ func (w *GoWriter) Write(path, outFname string) error {
 	}
 	defer f.Close()
 
+	fmt.Fprintln(f, "//  "+time.Now().Format("2006-01-02 15:04"))
 	fmt.Fprintln(f, w.pkg)
 	fmt.Fprintln(f, "")
 
 	fmt.Fprintln(f, "import (")
 	for _, imp := range w.imports {
-		fmt.Fprintln(f, imp)
+		fmt.Fprintln(f, "\t"+imp)
 	}
 	fmt.Fprintln(f, ")")
 	fmt.Fprintln(f, "")

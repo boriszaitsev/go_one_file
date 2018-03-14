@@ -28,15 +28,16 @@ func ReadGoFile(path, fname string) (GoFile, error) {
 		line := scanner.Text()
 		trm := ss.TrimSpace(line)
 
+		if len(trm) == 0 && ss.HasPrefix(trm, "//") {
+			continue
+		}
+
 		if ss.HasPrefix(trm, "package ") {
 			pkg = line
 			continue
 		}
 
 		if inImport {
-			if ss.HasPrefix(trm, "//") {
-				continue
-			}
 			imp := takeImport(trm)
 			if len(imp) > 0 {
 				imports = append(imports, imp)
@@ -67,7 +68,6 @@ func ReadGoFile(path, fname string) (GoFile, error) {
 		return GoFile{}, err
 	}
 	print(fname)
-	print(imports)
 	return GoFile{fname, pkg, imports, code}, nil
 }
 
