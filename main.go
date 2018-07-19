@@ -16,6 +16,10 @@ func main() {
 	outFileName := "_out_" + filepath.Base(path) + ".go"
 	print("out file name = ", outFileName)
 
+	exePath := path
+	if len(os.Args) == 2 {
+		path = filepath.Join(path, os.Args[1])
+	}
 	dirFiles, err := MakeDirFiles(path)
 	if err != nil {
 		pressEnterExit(err)
@@ -39,7 +43,7 @@ func main() {
 		writer.AddGoFile(goFile)
 	}
 
-	if err = writer.Write(path, outFileName); err != nil {
+	if err = writer.Write(exePath, outFileName); err != nil {
 		pressEnterExit(err)
 		return
 	}
